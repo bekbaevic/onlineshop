@@ -3,29 +3,26 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     isLoading: false,
     categories: [],
-    categoriesURL: 'https://onlineshopdatabase.onrender.com/categories'
+    categoriesURL: 'https://onlineshop-database.onrender.com/categories',
 }
 
 const CategorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
-        fetchingCategories(state) {
+        fetchingCategories: (state) => {
             state.isLoading = true
         },
-        fetchedCategories(state, action) {
+        fetchedCategories: (state, action) => {
             state.isLoading = false
             state.categories = action.payload
         },
-        errorCategories(state) {
+        errorCategories: (state) => {
             state.isLoading = false
         },
-        updateCategoriesURL(state, action) {
-            state.categoriesURL = action.payload
-        }
     }
 }
 )
 
-export const { fetchingCategories, fetchedCategories, errorCategories, updateCategoriesURL } = CategorySlice.actions
+export const { fetchingCategories, fetchedCategories, errorCategories } = CategorySlice.actions
 export default CategorySlice.reducer

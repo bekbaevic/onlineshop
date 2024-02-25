@@ -4,7 +4,7 @@ import { getCategory, getProduct } from '../getData/getAxiosData'
 import { useDispatch, useSelector } from 'react-redux'
 import CategoryCardItem from '../components/CategoryCardItem'
 import { Card, CardBody, CardFooter, CardHeader, Typography } from '@material-tailwind/react'
-import ScrollCarousel from 'scroll-carousel-react';
+import { filterWithCategory, filterWithSearching } from '../reducers/product.slice'
 
 const Products = () => {
   const product = useSelector(state => state.product)
@@ -15,46 +15,34 @@ const Products = () => {
   useEffect(() => { getCategory(category.categoriesURL, dispatch) }, [])
   return (
     <div>
-      {category.categories.length === 0 ?
-        <div className='gap-2 my-2 min-w-full animate-pulse flex '>
-          {[1, 2, 3, 4].map(item => (
-            <Typography key={item} as="div" variant='h1' className='bg-gray-300 w-[160px] rounded-sm h-[50px] overflow-hidden min-w-fit max-w-[200px] flex justify-center items-center'>&nbsp;</Typography>
-          ))}
-        </div>
-        :
-        <div className='flex max-w-[100%] overflow-x-auto pr-2 gap-2 my-2'>
-          {category.categories.map(item => (
-            <CategoryCardItem key={item.id} item={item} categories={category} dispatch={dispatch} />
-          ))}
-        </div>
-      }
-      <div>
-        <div >
-          <ScrollCarousel
-            direction='ltr'
-            autoplay
-            margin={0}
-            autoplaySpeed={1}
-            speed={1}
-            className='my-4'>
-            {[
-              "https://ishonchsavdo.uz/backend/storage/stock-images/2024-02-02%2004-29-31%2065cc41ab34a7c.jpg",
-              'https://ishonchsavdo.uz/backend/storage/stock-images/2023-12-12%2011-47-10%206578483e7e89a.png',
-              'https://pbs.twimg.com/media/E7HjBTDX0AExR7l.jpg',
-              'https://ishonchsavdo.uz/backend/storage/post-contents/2024-01-01%2005-39-16%20659f7f0409262.png',
-              "https://serv.comnet.uz/storage/16687543662022-11-18%2011.52.27.jpg",
-              'https://serv.comnet.uz/storage/1646033494New%20Year%20Post%20(4).jpg',
-              'https://www.smart174.ru/upload/iblock/ead/ne_proshelkay_padarki_mob.jpg',
-              'https://pizzayoli.ru/image/cache/catalog/stocks/one_one-1000x0.jpg',
-              'https://thumb.tildacdn.com/tild3563-3833-4133-a435-333339643738/-/format/webp/WhatsApp_Image_2023-.jpeg'
-            ].map((item) => (
-              <img className='h-[15vh]' src={item} key={item} />
+      <div className='border-b-[2px] shadow-sm'>
+
+        {category.categories.length === 0 ?
+          <div className='gap-2 my-2 min-w-full animate-pulse flex '>
+            {[1, 2, 3, 4].map(item => (
+              <Typography key={item} as="div" variant='h1' className='bg-gray-300 w-[160px] rounded-sm h-[50px] overflow-hidden min-w-fit max-w-[200px] flex justify-center items-center'>&nbsp;</Typography>
             ))}
-          </ScrollCarousel>
+          </div>
+          :
+          <div className='flex max-w-[100%] overflow-x-auto pr-2 gap-2 my-2'>
+            <div onClick={() => (dispatch(filterWithCategory([])), dispatch(filterWithSearching('')))} className='category-btn cursor-pointer mb-2 bg-gray-200 rounded-sm h-[50px] overflow-hidden min-w-[60px] flex justify-center items-center active:scale-95 hover:bg-gray-300'>
+              <Typography className='font-[600]'>All</Typography>
+            </div>
+            {category.categories.map(item => (
+              <CategoryCardItem key={item.id} item={item} categories={category} dispatch={dispatch} />
+            ))}
+          </div>
+        }
+      </div>
+      <div>
+        <div className='mb-2  px-4 py-[8px] '>
+          <Typography className='font-[700] text-[22px] '>
+            {product.filteredProducts.length !== 0 ? category.categories.find(item => item.id == product.filteredProducts[0].categoryId).title : "All"}
+          </Typography>
         </div>
         <div>
           {product.isLoading && product.products.length === 0 ?
-            <div className='my-2 min-w-full animate-pulse grid sm:grid-cols-1 md:grid-cols-4 gap-4'>
+            <div className='my-2 min-w-full animate-pulse grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
               {[2, 1, 3, 4].map(item => (
                 <Card key={item} className="max-h-[460px] min-h-[460px] flex flex-col justify-between border-[1px] border-gray-200">
                   <CardHeader shadow={false} floated={false} className="relative mb-0 ">
@@ -104,8 +92,8 @@ const Products = () => {
               ))}
             </div>
             :
-            <div className='grid sm:grid-cols-1 md:grid-cols-4 gap-4'>
-              {product.products.map(item => (
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+              {(!product.searchItem ? (product.filteredProducts.length !== 0 ? product.filteredProducts : product.products) : product.searchFilterProducts).map(item => (
                 <ProductCardItem key={item.id} item={item} product={product} dispatch={dispatch} />
               ))}
             </div>

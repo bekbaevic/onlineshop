@@ -2,24 +2,16 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from '../components/Header'
 import Container from '../components/Container'
-import ProductInfo from '../components/ProductInfo'
-import { useDispatch, useSelector } from 'react-redux'
-import { setProInfo } from '../reducers/product.slice'
 
 const Layout = () => {
-  const dispatch = useDispatch()
-  const isActive = useSelector(state => state.product.isActive)
   return (
-    <div className=''>
+    <div className='overflow-y-hidden max-h-[100vh'>
       <Header />
-      {isActive ?
-        <div onClick={() => dispatch(setProInfo())} className='w-[100%] overflow-y-hidden h-screen max-h-screen opacity-60 bg-black fixed top-0 left-0 z-20'></div>
-        : ""
-      }
-      {isActive ? <ProductInfo /> : ''}
-      <Container>
-        <Outlet />
-      </Container>
+      <div className='max-h-[calc(100vh-65px)] overflow-y-auto'>
+        <Container>
+          <Outlet />
+        </Container>
+      </div>
     </div>
   )
 }

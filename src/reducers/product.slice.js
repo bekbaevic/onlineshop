@@ -3,12 +3,10 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     isLoading: false,
     products: [],
-    favouriteProducts: [],
-    pro: {},
-    isActive: false,
-    productsURL: 'https://onlineshopdatabase.onrender.com/products',
-    basket: [],
-    productCount: []
+    productsURL: 'https://onlineshop-database.onrender.com/products',
+    filteredProducts: [],
+    searchFilterProducts: [],
+    searchItem: '',
 }
 
 const ProductSlice = createSlice({
@@ -25,34 +23,17 @@ const ProductSlice = createSlice({
         errorProducts(state) {
             state.isLoading = false
         },
-        setFavouriteProducts(state, action) {
-            state.favouriteProducts.push(action.payload)
+        filterWithCategory: (state, action) => {
+            state.filteredProducts = action.payload
         },
-        deleteProductInFavouriteProduct(state, action) {
-            state.favouriteProducts = state.favouriteProducts.filter(item => item.id !== action.payload)
+        filterWithSearching: (state, action) => {
+            state.searchItem = action.payload
+            state.searchFilterProducts = state.filteredProducts.length === 0 ? state.products.filter(item => item.title.toLowerCase().indexOf(action.payload) > -1) : state.filteredProducts.filter(item => item.title.toLowerCase().indexOf(action.payload) > -1)
         },
-        setProInfo(state) {
-            state.isActive = !state.isActive
-        },
-        setPro(state, action) {
-            state.pro = action.payload
-        },
-        updateProductsURL(state, action) {
-            state.productsURL = action.payload
-        },
-        updateProductToBasket(state, action) {
-            state.basket.push(action.payload)
-        },
-        setBasketProductCount(state, action) {
-            
-        },
-        deleteProductAtBasket(state, action) {
-            state.basket = state.basket.filter(item => item.id !== action.payload)
-        }
 
     }
 }
 )
 
-export const { fetchingProducts, fetchedProducts, errorProducts, setBasketProductCount, deleteProductAtBasket, setFavouriteProducts, setProInfo, setPro, deleteProductInFavouriteProduct, updateProductsURL, updateProductToBasket } = ProductSlice.actions
+export const { fetchingProducts, fetchedProducts, errorProducts, filterWithCategory, filterWithSearching } = ProductSlice.actions
 export default ProductSlice.reducer
